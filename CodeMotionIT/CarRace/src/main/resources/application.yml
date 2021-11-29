@@ -1,0 +1,41 @@
+management.metrics.export:
+
+  prometheus.enabled: true
+#  atlas.enabled: false
+#  datadog.enabled: false
+#  ganglia.enabled: false
+#  graphite.enabled: false
+#  influx.enabled: false
+#  jmx.enabled: false
+#  statsd.enabled: false
+#  newrelic.enabled: false
+#  signalfx.enabled: false
+
+spring:
+  application:
+    name: own-your-software
+#  jmx:
+#    enabled: true
+  kafka:
+    properties:
+      schema.registry.url: your-schema-registy-url
+      consumer:
+        auto-offset-reset: latest
+        group-id: simple-consumer
+    streams:
+      properties:
+        default:
+          key:
+            serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+          value:
+            serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+management:
+#  metrics:
+#    export:
+#      jmx:
+#        enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: '*'

@@ -1,0 +1,16 @@
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "payment": {
+    "toIBAN": "NL63ABNA332454654",
+    "fromIBAN": "NL61RABO0332454657",
+    "amount": "10"
+  },
+  "account": {
+    "iban": "NL61RABO0332454657",
+    "name": "K. Turk"
+  }
+}
+
+###
