@@ -12,9 +12,13 @@ public class FraudProcessor {
     private Fraud fraud;
 
     // 3.3 create kafka listener topics blacklists, and groupID something
+    @KafkaListener(topics = "blacklist", groupId = "something")
     public void consume(ConsumerRecord<?, ?> consumerRecord) {
         log.info("received payload='{}'", consumerRecord.value());
+
         // 3.4 cast to fraud
+        Fraud fraud = (Fraud) consumerRecord.value();
+        setFraud(fraud);
     }
 
     public Fraud getFraud() {

@@ -14,6 +14,7 @@ public class PaymentProcessor {
     private Payment payment;
 
     // 3.1 create kafka listener with topics payments and groupid something
+    @KafkaListener(topics = "payments", groupId = "something")
     public void consume(ConsumerRecord<?, ?> consumerRecord) {
         log.info("received payload='{}'", consumerRecord.value());
 
