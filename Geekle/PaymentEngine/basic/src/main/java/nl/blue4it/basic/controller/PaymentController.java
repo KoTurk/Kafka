@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class PaymentController {
@@ -27,6 +25,13 @@ public class PaymentController {
 
     private Payment createPayment() {
         // 2.1 create a payment
-        return null;
+        return Payment.newBuilder()
+                        .setName("Mister Blue")
+                        .setAmount(100.00F)
+                        .setBalance(500.00F)
+                        .setIban("NL61RABO0332546754")
+                        .setToIban("NL61RABO0332543675")
+                        .setProcessed(true)
+                        .build();
     }
 }
