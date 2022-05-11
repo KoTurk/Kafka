@@ -21,7 +21,7 @@ public class PaymentKStreams {
             // 4.5 peek balance ok
             // 4.6 to topic fraud
 
-        // return stream4.9
+        // 4.9 return stream4
         return null;
     }
 
