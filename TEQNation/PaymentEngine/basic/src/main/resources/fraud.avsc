@@ -1,1 +1,8 @@
 // 1.2 avro fraud
+{"namespace": "example.avro",
+ "type": "record",
+ "name": "Fraud",
+ "fields": [
+     {"name": "iban", "type": "string"}
+ ]
+}
