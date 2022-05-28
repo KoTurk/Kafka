@@ -11,22 +11,33 @@ public class PaymentKStreams {
 
     public static KStream<String, Payment> getPaymentKStream(StreamsBuilder builder) {
         // 4.1 Create stream payments
+        KStream<String, Payment> paymentKStream = builder.stream("payments");
 
         // 4.8 create table balances
 
         // 4.2 peek
+        paymentKStream.peek((key,payment) -> {
+            System.out.println("Got a message, checking balance");
+            Metrics.counter("a.count").increment();
+        })
 
         // 4.9 join balance
         // 4.3 filter balance and amount
+         .filter((key, payment) -> payment.getBalance() >= payment.getAmount())
 
         // 4.4 mapValues
+         .mapValues((key, payment) -> new Fraud(payment.getIban()))
 
         // 4.5 peek balance ok
+        .peek((key,payment) -> {
+            System.out.println("Balance OK, next step is the fraud check");
+        })
 
         // 4.6 to topic fraud
+        .to("fraud");
 
         // 4.7 return stream4
-        return null;
+        return paymentKStream;
     }
 
 }

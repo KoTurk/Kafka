@@ -15,7 +15,8 @@ import java.util.ArrayList;
 @Slf4j
 public class PaymentService {
 
-    // 2.2 Create Kafka <String, Paymemnt> Template
+    // 2.2 Create Kafka <String, Payment> Template
+    private final KafkaTemplate<String, Payment> kafkaTemplate;
 
     public boolean processPayment(Payment payment) {
         // Check balance
@@ -26,8 +27,10 @@ public class PaymentService {
         // Sending alerts
 
         // 2.3 send transaction
+        sendTransaction("payments", payment);
 
-        // 2.5 do balance and reward check
+        // 2.5 reward check
+        rewardCustomer("reward", payment);
 
         return true;
     }
@@ -35,9 +38,8 @@ public class PaymentService {
     private void sendTransaction(String topic, Payment message) {
         log.info("Going to process transaction, sending message {}", message);
         // 2.4 Send to topic "payments" and send message
+        kafkaTemplate.send(topic, message);
     }
 
-    private void doFraudCheck(String topic, Payment message) {}
-    private void doBalanceCheck(String topic, Payment message) {}
     private void rewardCustomer(String topic, Payment message) {}
 }
