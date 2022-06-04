@@ -1,6 +1,6 @@
 # Event Streaming Applications with Kafka Streams, Spring Kafka and Actuator
 
-<img src="https://static.wixstatic.com/media/59e36e_64234b8ff9b048bcafd680e09e1d8d65~mv2.jpg/v1/fill/w_1920,h_1080,al_c/59e36e_64234b8ff9b048bcafd680e09e1d8d65~mv2.jpg" />
+<img src="https://papercallio-production.s3.amazonaws.com/uploads/event/logo/2949/jnation_PNG.png" />
 
 ## Prerequisites
 - IDE
@@ -26,7 +26,7 @@ Clone or download this repo.
 ### Exercises Basic Kafka
 1. Start docker (when installed) with ./start.sh (or build your own cmd file)
 2. Go to the basic / src / resources directory
-3. Fill in the avro objects fraud.avsc and payment.avsc
+3. Fill in the avro objects payment.avsc
 4. In the src code, follow all the comments and begin from the controller, to the service, and to the processors
 5. When filled in the code, execute the test
 6. It will fail, because only the payments are processed, not the frauds (we will make this)
