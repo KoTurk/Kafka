@@ -2,6 +2,7 @@ package nl.blue4it.streaming.streams;
 
 import example.avro.Fraud;
 import example.avro.Payment;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
@@ -17,7 +18,13 @@ public class PaymentKStreams {
         // 4.2 peek
         paymentKStream.peek((key,payment) -> {
             System.out.println("Checking balance");
-            Metrics.counter("a.count").increment();
+
+            Counter.builder("a.message.count")
+                    .tag("bankcode", payment.getIban().substring(4, 8))
+                    .register(Metrics.globalRegistry)
+                    .increment();
+            //http://localhost:8081/actuator/metrics/a.message.count?tag=bankcode:RABO
+
         })
         // 4.9 join balance
         // 4.3 filter balance and amount
