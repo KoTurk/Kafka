@@ -12,6 +12,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.Duration;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,7 +42,7 @@ class BigDataMessageSendTest {
                     assertThat(paymentProcessor.getPayment()).isNotNull();
                     assertTrue(paymentProcessor.getPayment().getProcessed());
                     System.out.println("--------> Payment send to topic, proceed");
-                   });
+                });
     }
 
     private Payment createPayment() {
@@ -49,10 +50,18 @@ class BigDataMessageSendTest {
                 .setName("Mister Blue")
                 .setAmount(100.00F)
                 .setBalance(500.00F)
-                .setIban("NL63ABNA332454654")
+                .setIban("NL63" + randomIbanCode() + "332454654")
                 .setToIban("NL61RABO0332543675")
                 .setProcessed(true)
                 .build();
+    }
+
+    private String randomIbanCode() {
+        String[] ibanCodes = {"RABO", "ABNA", "INGB", "DEUT"};
+        Random random = new Random();
+        int randomNumber = random.nextInt(ibanCodes.length);
+
+        return ibanCodes[randomNumber];
     }
 
 }

@@ -1,7 +1,6 @@
 spring:
   application:
     name: payment-engine
-
   kafka:
     streams:
       properties:
@@ -21,5 +20,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: 'metrics'
+  endpoint:
+    prometheus:
+      enabled: true
 
+server:
+  port: 8081
