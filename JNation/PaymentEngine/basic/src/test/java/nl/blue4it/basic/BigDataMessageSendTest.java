@@ -42,7 +42,7 @@ class BigDataMessageSendTest {
                     assertThat(paymentProcessor.getPayment()).isNotNull();
                     assertTrue(paymentProcessor.getPayment().getProcessed());
                     System.out.println("--------> Payment send to topic, proceed");
-                   });
+                });
     }
 
     private Payment createPayment() {
