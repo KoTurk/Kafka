@@ -20,10 +20,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: 'metrics'
-  endpoint:
-    prometheus:
-      enabled: true
+        include: '*'
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 server:
   port: 8081
