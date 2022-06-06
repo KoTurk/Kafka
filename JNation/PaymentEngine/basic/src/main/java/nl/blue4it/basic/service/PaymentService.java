@@ -1,10 +1,13 @@
 package nl.blue4it.basic.service;
 
 import example.avro.Payment;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 
+import nl.blue4it.basic.exception.FilterException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +18,7 @@ import java.util.ArrayList;
 @Slf4j
 public class PaymentService {
 
-    // 2.2 Create Kafka <String, Paymemnt> Template
+    // 2.2 Create Kafka <String, Payment> Template
 
     public boolean processPayment(Payment payment) {
         // Check balance
@@ -34,6 +37,9 @@ public class PaymentService {
 
     private void sendTransaction(String topic, Payment message) {
         log.info("Going to process transaction, sending message {}", message);
+
+        // 2.4.2 send exception
+
         // 2.4 Send to topic "payments" and send message
     }
 

@@ -16,6 +16,8 @@ public class PaymentKStreams {
 
         // 4.2 peek
 
+        // 4.2.2 create metrics!!
+
         // 4.9 join balance
         // 4.3 filter balance and amount
 
