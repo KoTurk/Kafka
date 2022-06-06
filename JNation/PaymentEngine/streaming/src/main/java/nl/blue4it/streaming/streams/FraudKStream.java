@@ -16,7 +16,8 @@ public class FraudKStream {
             System.out.println("Checking Fraud");
         })
         // 5.3 fILter iban NL63ABNA332454654
-         .filter((username, user) -> "NL63ABNA332454654".equals(user.getIban()))
+        .filter((username, user) -> "NL63ABNA332454654".equals(user.getIban()))
+        // .filter((username, user) -> filterOrThrow(user))
         // 5.4 map values
         .mapValues((iban, user) -> new Fraud(user.getIban()))
         // 5.5 peek
@@ -31,6 +32,14 @@ public class FraudKStream {
         .defaultBranch(Branched.withConsumer(ks -> ks.to("blacklist")));
         // 5.9 return stream
         return fraudKStream;
+    }
+
+    private static boolean filterOrThrow(Fraud user) {
+        if ("NL63DEUT332454654".equals(user.getIban())) {
+            throw new NullPointerException("story of my life");
+        } else {
+            return true;
+        }
     }
 
     private static boolean reward(Fraud value) {

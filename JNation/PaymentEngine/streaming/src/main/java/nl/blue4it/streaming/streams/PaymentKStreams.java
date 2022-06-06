@@ -19,10 +19,11 @@ public class PaymentKStreams {
         paymentKStream.peek((key,payment) -> {
             System.out.println("Checking balance");
 
+            // 4.2.2 create metrics!!
             Counter.builder("a.message.count")
-                    .tag("bankcode", payment.getIban().substring(4, 8))
-                    .register(Metrics.globalRegistry)
-                    .increment();
+                .tag("bankcode", payment.getIban().substring(4, 8))
+                .register(Metrics.globalRegistry)
+                .increment();
             //http://localhost:8081/actuator/metrics/a.message.count?tag=bankcode:RABO
 
         })
