@@ -37,6 +37,8 @@ public class PaymentEngineTopology {
 
         // 6 Build Topology and visualise6.
         // at https://zz85.github.io/kafka-streams-viz/
+        Topology topology = builder.build();
+        System.out.println("Topology description" + topology.describe());
 
         return builder.build();
     }

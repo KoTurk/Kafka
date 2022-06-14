@@ -1,5 +1,6 @@
 package nl.blue4it.streaming;
 
+import example.avro.Account;
 import example.avro.Fraud;
 import example.avro.Payment;
 import nl.blue4it.streaming.streams.FraudKStream;
@@ -20,13 +21,13 @@ public class PaymentEngineTopology {
     }
 
     @Bean
-    public KStream<String, Payment> handleStream(StreamsBuilder builder) {
+    public KStream<Account, Payment> handleStream(StreamsBuilder builder) {
         // 4 Create Payment Stream
         return PaymentKStreams.getPaymentKStream(builder);
     }
 
     @Bean
-    public  KStream<String, Fraud> handleFraudStream(StreamsBuilder builder) {
+    public  KStream<Account, Fraud> handleFraudStream(StreamsBuilder builder) {
         // 5 Create Fraud Stream
         return FraudKStream.getFraudKStream(builder);
     }

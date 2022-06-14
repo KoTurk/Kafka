@@ -2,6 +2,8 @@ package nl.blue4it.basic;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import example.avro.Balance;
 import example.avro.Payment;
 
 import nl.blue4it.basic.processor.PaymentProcessor;
@@ -18,9 +20,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DirtiesContext
 @SpringBootTest(classes = PaymentEngineApplication.class)
-@KafkaListener(topics = "payments", groupId = "something")
 class EmbeddedKafkaIntegrationTest {
 
     @Autowired
@@ -31,7 +31,8 @@ class EmbeddedKafkaIntegrationTest {
 
     @Test
     public void testConsumer() throws Exception {
-        service.processPayment(createPayment());
+        service.processPayment(createPayment(), "payments");
+        service.processPayment(createBalance(), "balance");
 
         Awaitility.await()
                 .atMost(Duration.ofSeconds(10))
@@ -50,6 +51,13 @@ class EmbeddedKafkaIntegrationTest {
                 .setIban("NL63ABNA332454654")
                 .setToIban("NL61RABO0332543675")
                 .setProcessed(true)
+                .build();
+    }
+
+    private Balance createBalance() {
+        return Balance.newBuilder()
+                .setAmount(500.00F)
+                .setCurrency("EUR")
                 .build();
     }
 

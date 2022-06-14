@@ -35,8 +35,8 @@ services:
         kafka-topics --create --topic=payments --if-not-exists --bootstrap-server=kafka:29092 group.id=something && sleep 2s &&
         kafka-topics --create --topic=fraud --if-not-exists --bootstrap-server=kafka:29092 group.id=something && sleep 2s &&
         kafka-topics --create --topic=rewards --if-not-exists --bootstrap-server=kafka:29092 group.id=something && sleep 2s &&
-        kafka-topics --create --topic=blacklist --if-not-exists --bootstrap-server=kafka:29092 group.id=something"
-
+        kafka-topics --create --topic=blacklist --if-not-exists --bootstrap-server=kafka:29092 group.id=something && sleep 2s && 
+        kafka-topics --create --topic=balance --if-not-exists --bootstrap-server=kafka:29092 group.id=something"
   schemaregistry:
     image: confluentinc/cp-schema-registry:5.1.2
     restart: always

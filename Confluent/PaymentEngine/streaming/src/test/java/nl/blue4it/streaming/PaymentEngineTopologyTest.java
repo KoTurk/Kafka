@@ -9,7 +9,6 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serdes.StringSerde;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.TestInputTopic;
@@ -45,7 +44,7 @@ class PaymentEngineTopologyTest {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "test");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:1234");
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, StringSerde.class);
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
         props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, MOCK_SCHEMA_REGISTRY_URL);
 
@@ -54,24 +53,24 @@ class PaymentEngineTopologyTest {
 
         // Create Serdes used for test record keys and values
         Serde<Account> accountSerde = new SpecificAvroSerde<>();
-        Serde<Payment> avroUserSerde = new SpecificAvroSerde<>();
-        Serde<Fraud> avroColorSerde = new SpecificAvroSerde<>();
+        Serde<Payment> avroPaymentSerde = new SpecificAvroSerde<>();
+        Serde<Fraud> avroFraudSerde = new SpecificAvroSerde<>();
 
         // Configure Serdes to use the same mock schema registry URL
         Map<String, String> config = Map.of(
                 AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, MOCK_SCHEMA_REGISTRY_URL);
-        avroUserSerde.configure(config, false);
-        avroColorSerde.configure(config, false);
+        avroPaymentSerde.configure(config, false);
+        avroFraudSerde.configure(config, false);
 
         // Define input and output topics to use in tests
         paymentTopic = testDriver.createInputTopic(
                 "payments",
                 accountSerde.serializer(),
-                avroUserSerde.serializer());
+                avroPaymentSerde.serializer());
         fraudTopic = testDriver.createOutputTopic(
                 "fraud",
                 accountSerde.deserializer(),
-                avroColorSerde.deserializer());
+                avroFraudSerde.deserializer());
     }
 
     @AfterEach

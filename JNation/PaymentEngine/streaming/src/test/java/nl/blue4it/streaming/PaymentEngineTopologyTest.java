@@ -1,6 +1,8 @@
 package nl.blue4it.streaming;
 
 
+import example.avro.Account;
+import example.avro.Balance;
 import example.avro.Fraud;
 import example.avro.Payment;
 import io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry;
@@ -30,8 +32,10 @@ class PaymentEngineTopologyTest {
 
     private TopologyTestDriver testDriver;
 
-    private TestInputTopic<String, Payment> paymentTopic;
-    private TestOutputTopic<String, Fraud> fraudTopic;
+    private TestInputTopic<Account, Payment> paymentTopic;
+    private TestOutputTopic<Account, Fraud> fraudTopic;
+
+    private TestOutputTopic<Account, Balance> balanceTopic;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -52,25 +56,32 @@ class PaymentEngineTopologyTest {
         testDriver = new TopologyTestDriver(topology, props);
 
         // Create Serdes used for test record keys and values
-        Serde<String> stringSerde = Serdes.String();
-        Serde<Payment> avroUserSerde = new SpecificAvroSerde<>();
-        Serde<Fraud> avroColorSerde = new SpecificAvroSerde<>();
+        Serde<Account> accountSerde = new SpecificAvroSerde<>();
+        Serde<Payment> avroPaymentSerde = new SpecificAvroSerde<>();
+        Serde<Fraud> avroFraudSerde = new SpecificAvroSerde<>();
+        Serde<Balance> avroBalanceSerde = new SpecificAvroSerde<>();
 
         // Configure Serdes to use the same mock schema registry URL
         Map<String, String> config = Map.of(
                 AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, MOCK_SCHEMA_REGISTRY_URL);
-        avroUserSerde.configure(config, false);
-        avroColorSerde.configure(config, false);
+        accountSerde.configure(config, false);
+        avroPaymentSerde.configure(config, false);
+        avroFraudSerde.configure(config, false);
+        avroBalanceSerde.configure(config, false);
 
         // Define input and output topics to use in tests
         paymentTopic = testDriver.createInputTopic(
                 "payments",
-                stringSerde.serializer(),
-                avroUserSerde.serializer());
+                accountSerde.serializer(),
+                avroPaymentSerde.serializer());
         fraudTopic = testDriver.createOutputTopic(
                 "fraud",
-                stringSerde.deserializer(),
-                avroColorSerde.deserializer());
+                accountSerde.deserializer(),
+                avroFraudSerde.deserializer());
+        balanceTopic = testDriver.createOutputTopic(
+                "balance",
+                accountSerde.serializer(),
+                avroBalanceSerde.serializer());
     }
 
     @AfterEach
@@ -81,8 +92,13 @@ class PaymentEngineTopologyTest {
 
     @Test
     void shouldPropagateUserWithFavoriteColorRed() throws Exception {
+        Balance balance = new Balance(100F, "EUR");
+        balanceTopic.
+
         Payment payment = new Payment("SomeEvilPerson", "NL63ABNA332454654", "NL63RABO332454652", 100F, 500F, true);
-        paymentTopic.pipeInput("!@##$@#$", payment);
+        paymentTopic.pipeInput(new Account("SomeEvilPerson", "NL63ABNA332454654"), payment);
+
+
         assertEquals(new Fraud("NL63ABNA332454654"), fraudTopic.readValue());
     }
 }

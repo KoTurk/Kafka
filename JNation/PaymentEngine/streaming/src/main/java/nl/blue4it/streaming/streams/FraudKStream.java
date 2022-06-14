@@ -60,4 +60,14 @@ public class FraudKStream {
     private static boolean reward(Fraud value) {
         return false;
     }
+
+    private static boolean filterOrThrow(Fraud user) throws FilterException {
+        if ("NL63DEUT332454654".equals(user.getIban())) {
+            // I MADE A JAVA PROGRAM TO TELL ME MY PURPOSE
+            // IT KEEPS SAYING NULLPOINTEREXCEPTION, SO IT WORKS GREAT
+            throw new FilterException("never going to do this");
+        } else {
+            return true;
+        }
+    }
 }

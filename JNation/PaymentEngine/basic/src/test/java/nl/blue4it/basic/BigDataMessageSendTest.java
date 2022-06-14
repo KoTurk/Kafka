@@ -32,7 +32,7 @@ class BigDataMessageSendTest {
     public void testConsumer() throws Exception {
 
         for(int i = 0; i < 1000; i++){
-            service.processPayment(createPayment());
+            service.processPayment(createPayment(), "payments");
         }
 
 
