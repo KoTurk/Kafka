@@ -2,14 +2,15 @@ package nl.blue4it.streaming;
 
 
 import example.avro.Account;
+import example.avro.Balance;
 import example.avro.Fraud;
 import example.avro.Payment;
+import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serdes.StringSerde;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.TestInputTopic;
@@ -32,6 +33,7 @@ class PaymentEngineTopologyTest {
     private TopologyTestDriver testDriver;
 
     private TestInputTopic<Account, Payment> paymentTopic;
+    private TestInputTopic<Account, Balance> balanceTopic;
     private TestOutputTopic<Account, Fraud> fraudTopic;
 
     @BeforeEach
@@ -45,7 +47,7 @@ class PaymentEngineTopologyTest {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "test");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:1234");
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, StringSerde.class);
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
         props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, MOCK_SCHEMA_REGISTRY_URL);
 
@@ -54,24 +56,31 @@ class PaymentEngineTopologyTest {
 
         // Create Serdes used for test record keys and values
         Serde<Account> accountSerde = new SpecificAvroSerde<>();
-        Serde<Payment> avroUserSerde = new SpecificAvroSerde<>();
-        Serde<Fraud> avroColorSerde = new SpecificAvroSerde<>();
+        Serde<Payment> avroPaymentSerde = new SpecificAvroSerde<>();
+        Serde<Fraud> avroFraudSerde = new SpecificAvroSerde<>();
+        Serde<Balance> avroBalanceSerde = new SpecificAvroSerde<>();
 
         // Configure Serdes to use the same mock schema registry URL
         Map<String, String> config = Map.of(
                 AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, MOCK_SCHEMA_REGISTRY_URL);
-        avroUserSerde.configure(config, false);
-        avroColorSerde.configure(config, false);
+        accountSerde.configure(config, true);
+        avroPaymentSerde.configure(config, false);
+        avroFraudSerde.configure(config, false);
+        avroBalanceSerde.configure(config, false);
 
         // Define input and output topics to use in tests
         paymentTopic = testDriver.createInputTopic(
                 "payments",
                 accountSerde.serializer(),
-                avroUserSerde.serializer());
+                avroPaymentSerde.serializer());
+        balanceTopic = testDriver.createInputTopic(
+                "balance",
+                accountSerde.serializer(),
+                avroBalanceSerde.serializer());
         fraudTopic = testDriver.createOutputTopic(
                 "fraud",
                 accountSerde.deserializer(),
-                avroColorSerde.deserializer());
+                avroFraudSerde.deserializer());
     }
 
     @AfterEach
@@ -81,9 +90,10 @@ class PaymentEngineTopologyTest {
     }
 
     @Test
-    void shouldPropagateUserWithFavoriteColorRed() throws Exception {
+    void shouldTestTopology() throws Exception {
         Payment payment = new Payment("SomeEvilPerson", "NL63ABNA332454654", "NL63RABO332454652", 100F, 500F, true);
-        paymentTopic.pipeInput(new Account("SomeEvilPerson", "NL63ABNA332454654"), payment);
+        balanceTopic.pipeInput(new Account("MisterBlue", "NL63ABNA332454654"), new Balance(200F, "EUR"));
+        paymentTopic.pipeInput(new Account("MisterBlue", "NL63ABNA332454654"), payment);
         assertEquals(new Fraud("NL63ABNA332454654"), fraudTopic.readValue());
     }
 }
