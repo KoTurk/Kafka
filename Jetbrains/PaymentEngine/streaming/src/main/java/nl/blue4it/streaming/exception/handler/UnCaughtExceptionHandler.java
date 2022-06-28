@@ -17,16 +17,4 @@ public class UnCaughtExceptionHandler implements StreamsUncaughtExceptionHandler
         // https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Streams+Architecture
         return StreamThreadExceptionResponse.REPLACE_THREAD;
     }
-
-    private void playSound() {
-        try {
-            File f = new File("/Users/turk/Downloads/test2.wav");
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-        } catch (Exception e) {
-            System.out.println("something went wrong");
-        }
-    }
 }

@@ -25,13 +25,6 @@ public class PaymentController {
 
     private Payment createPayment() {
         // 2.1 create a payment
-        return Payment.newBuilder()
-            .setName("Mister Blue")
-            .setAmount(100.00F)
-            .setBalance(500.00F)
-            .setIban("NL61EVIL0332546754")
-            .setToIban("NL61RABO0332543675")
-            .setProcessed(true)
-            .build();
+        return null;
     }
 }

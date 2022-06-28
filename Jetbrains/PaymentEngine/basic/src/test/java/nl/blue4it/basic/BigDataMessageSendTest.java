@@ -2,6 +2,7 @@ package nl.blue4it.basic;
 
 
 import example.avro.Payment;
+import lombok.extern.slf4j.Slf4j;
 import nl.blue4it.basic.kafka.consumer.PaymentConsumer;
 import nl.blue4it.basic.kafka.producer.PaymentProducer;
 import org.awaitility.Awaitility;
@@ -17,9 +18,8 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DirtiesContext
 @SpringBootTest(classes = PaymentEngineApplication.class)
-@KafkaListener(topics = "payments", groupId = "something")
+@Slf4j
 class BigDataMessageSendTest {
 
     @Autowired
@@ -35,13 +35,12 @@ class BigDataMessageSendTest {
             service.processPayment(createPayment(), "payments");
         }
 
-
         Awaitility.await()
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(() -> {
                     assertThat(paymentProcessor.getPayment()).isNotNull();
                     assertTrue(paymentProcessor.getPayment().getProcessed());
-                    System.out.println("--------> Payment send to topic, proceed");
+                    log.info("--------> Payment send to topic, proceed");
                 });
     }
 

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import example.avro.Balance;
 import example.avro.Payment;
 
+import lombok.extern.slf4j.Slf4j;
 import nl.blue4it.basic.kafka.consumer.PaymentConsumer;
 import nl.blue4it.basic.kafka.producer.PaymentProducer;
 import org.awaitility.Awaitility;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = PaymentEngineApplication.class)
+@Slf4j
 class EmbeddedKafkaIntegrationTest {
 
     @Autowired
@@ -37,7 +39,7 @@ class EmbeddedKafkaIntegrationTest {
                 .untilAsserted(() -> {
                     assertThat(paymentConsumer.getPayment()).isNotNull();
                     assertTrue(paymentConsumer.getPayment().getProcessed());
-                    System.out.println("--------> Payment send to topic, proceed");
+                    log.info("--------> Payment send to topic, proceed");
                    });
     }
 

@@ -13,49 +13,26 @@ public class FraudKStream {
 
     public static KStream<Account, Fraud> getFraudKStream(StreamsBuilder builder) {
         // 5.1 Create stream fraud
-        KStream<Account, Fraud> fraudKStream = builder.stream("fraud");
 
         // 5.2 peek
-        fraudKStream.peek((account, payment) -> {
-            System.out.println("Checking Fraud");
-//            throw new NullPointerException("ooops");
-        })
 
         // 5.3 fILter iban NL63ABNA332454654
-        .filter((account, payment) -> {
-            try {
-                return filterOrThrow(payment);
-            } catch (FilterException e) {
-                Counter.builder("a.exception.count")
-                        .tag("exception", e.getMessage())
-                        .register(Metrics.globalRegistry)
-                        .increment();
-                return false;
-            }
-        })
 
         // 5.4 map values
-        .mapValues((account, payment) -> new Fraud(payment.getIban()))
 
         // 5.5 peek
-        .peek((account, payment) -> {
-            System.out.println("Got a Fraud, don't process");
-        })
 
         // 5.6 split
-        .split()
 
         // 5.7 branch
-        .branch((account, payment) -> reward(payment), Branched.withConsumer(ks -> ks.to("rewards")))
 
         // 5.8 defaullbranch
-        .defaultBranch(Branched.withConsumer(ks -> ks.to("blacklist")));
 
         // 5.9 return stream
-        return fraudKStream;
+        return null;
     }
 
-    private static boolean reward(Fraud value) {
+    private static boolean analytics(Fraud value) {
         return false;
     }
 
@@ -63,7 +40,9 @@ public class FraudKStream {
         if ("NL63DEUT332454654".equals(user.getIban())) {
             // I MADE A JAVA PROGRAM TO TELL ME MY PURPOSE
             // IT KEEPS SAYING NULLPOINTEREXCEPTION, SO IT WORKS GREAT
-            throw new FilterException("never going to do this");
+
+            // 5.10 throw exception
+            throw new NullPointerException("oh no, why???");
         } else {
             return true;
         }

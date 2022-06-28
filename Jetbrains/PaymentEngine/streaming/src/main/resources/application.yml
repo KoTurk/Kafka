@@ -4,8 +4,6 @@ spring:
   kafka:
     streams:
       properties:
-#        processing:
-#          guarantee: exactly_once
         schema:
           registry:
             url: http://localhost:8085

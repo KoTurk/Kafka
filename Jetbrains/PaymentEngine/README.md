@@ -1,6 +1,6 @@
 # Event Streaming Applications with Kafka Streams, Spring Kafka and Actuator
 
-<img src="https://assets.confluent.io/m/1661ef5e4ff82d3d/original/20200122-PNG-web-dev-logo-denim.png" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/JetBrains_Logo_2016.svg/1200px-JetBrains_Logo_2016.svg.png" />
 
 ## Prerequisites
 - IDE
@@ -24,13 +24,14 @@
 Clone or download this repo.
 
 ### Exercises Basic Kafka
-1. Start docker (when installed) with ./start.sh (or build your own cmd file)
-2. Go to the basic / src / resources directory
-3. In the src code, follow all the comments and begin from the controller, to the service, and to the processors
-4. When filled in the code, execute the test
+1. Start zookeeper / kafka / kafka-ui with docker with ./start.sh
+2. In the src code, follow all the comments and begin from the config to controller, to the producer and consumer
+3. When filled in the code, execute the EmbeddedKafkaIntegrationTest
 
 ### Exercises Kafka Streams
 1. Go to the PaymentKStream, read the comments and fill in the missing code
 2. Do the same for the FraudKStream
-3. Now execute the test in directory basic again. 
-4. It should pass now. If not, retry. Sometimes Kafka needs a wake up call.
+3. And at last the Topology
+4. Now execute the test in directory basic again. 
+5. It should pass now. 
+6. It is also possible to execute the test from the streaming module (that's in memory and faster)
